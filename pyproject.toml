@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "shipstation"
 version = "2.0.0"
 description = "Fully-typed Python SDK for the ShipStation API v2"
-requires-python = ">=3.11"
+requires-python = ">=3.10"
 license = {text = "MIT"}
 dependencies = [
     "pydantic>=2.0",
@@ -27,5 +27,5 @@ include = ["shipstation*"]
 testpaths = ["tests"]
 
 [tool.pyright]
-pythonVersion = "3.11"
+pythonVersion = "3.10"
 typeCheckingMode = "basic"
