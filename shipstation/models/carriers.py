@@ -12,6 +12,19 @@ from ._common import (
 )
 
 
+class CarrierAdvancedOption(BaseModel):
+    """Advanced options that are specific to the carrier"""
+
+    model_config = ConfigDict(populate_by_name=True)
+
+    name: Optional[str] = None
+    """Name of advanced option"""
+    default_value: Optional[str] = None
+    """Default value of option"""
+    description: Optional[str] = None
+    """Description of option"""
+
+
 class Service(BaseModel):
     """A service offered by the carrier"""
 
@@ -30,19 +43,6 @@ class Service(BaseModel):
     """Supports international shipping."""
     is_multi_package_supported: Optional[bool] = None
     """Carrier supports multiple packages per shipment"""
-
-
-class CarrierAdvancedOption(BaseModel):
-    """Advanced options that are specific to the carrier"""
-
-    model_config = ConfigDict(populate_by_name=True)
-
-    name: Optional[str] = None
-    """Name of advanced option"""
-    default_value: Optional[str] = None
-    """Default value of option"""
-    description: Optional[str] = None
-    """Description of option"""
 
 
 class Carrier(BaseModel):
