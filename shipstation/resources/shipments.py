@@ -33,7 +33,7 @@ class ShipmentsResource:
         *,
         shipment_status: Optional[ShipmentStatus] = None,
         batch_id: Optional[str] = None,
-        pickup_id: str,
+        pickup_id: Optional[str] = None,
         created_at_start: Optional[datetime] = None,
         created_at_end: Optional[datetime] = None,
         modified_at_start: Optional[datetime] = None,

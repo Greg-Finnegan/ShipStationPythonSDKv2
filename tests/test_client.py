@@ -79,7 +79,7 @@ class TestListShipments:
         with patch.object(
             client._api, "request", return_value=_mock_response(json_data=payload)
         ) as mock:
-            result = client.shipments.list(pickup_id="se-123")
+            result = client.shipments.list()
 
         mock.assert_called_once()
         args, kwargs = mock.call_args
@@ -100,7 +100,6 @@ class TestListShipments:
             client._api, "request", return_value=_mock_response(json_data=payload)
         ) as mock:
             client.shipments.list(
-                pickup_id="se-123",
                 shipment_status=ShipmentStatus.PENDING,
                 page=2,
                 page_size=50,
@@ -141,7 +140,7 @@ class TestListShipments:
         with patch.object(
             client._api, "request", return_value=_mock_response(json_data=payload)
         ):
-            result = client.shipments.list(pickup_id="se-123")
+            result = client.shipments.list()
 
         assert result.total == 1
         assert len(result.shipments) == 1

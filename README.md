@@ -51,8 +51,8 @@ from shipstation import ShipStation
 
 client = ShipStation(api_key=os.environ["SHIPSTATION_API_KEY"])
 
-# List shipments for a given pickup
-response = client.shipments.list(pickup_id="se-123456")
+# List recent shipments
+response = client.shipments.list(page_size=5)
 
 for shipment in response.shipments:
     print(f"  {shipment.shipment_id} — status: {shipment.shipment_status}")

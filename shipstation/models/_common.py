@@ -84,7 +84,160 @@ class Address(BaseModel):
     """The third line of the street address. For some addresses, this line may not be needed."""
 
 
+class ShippingAddress(BaseModel):
+
+    model_config = ConfigDict(populate_by_name=True)
+
+    name: str
+    """The name of a contact person at this address. This field may be set instead of - or in addition to - the `company_name` """
+    phone: str
+    """The phone number of a contact person at this address. The format of this phone number varies depending on the country."""
+    address_line1: str
+    """The first line of the street address. For some addresses, this may be the only line. Other addresses may require 2 or 3 """
+    city_locality: str
+    """The name of the city or locality"""
+    state_province: str
+    """The state or province. For some countries (including the U.S.) only abbreviations are allowed. Other countries allow the"""
+    postal_code: str
+    country_code: str
+    """The two-letter ISO 3166-1 country code"""
+    address_residential_indicator: AddressResidentialIndicator
+    """Indicates whether this is a residential address."""
+    email: Optional[str] = None
+    """Email for the address owner."""
+    company_name: Optional[str] = None
+    """If this is a business address, then the company name should be specified here."""
+    address_line2: Optional[str] = None
+    """The second line of the street address. For some addresses, this line may not be needed."""
+    address_line3: Optional[str] = None
+    """The third line of the street address. For some addresses, this line may not be needed."""
+    instructions: Optional[str] = None
+    """Additional text about how to handle the shipment at this address."""
+
+
+class LabelMessages(BaseModel):
+    """
+    Custom messages to print on the shipping label for the package. These are typically used
+    to print invoice numbers, product numbers, or other internal reference numbers. Not all
+    carriers support label messages. The number of lines and the maximum length of each line
+    also varies by carrier. |Carrier |Max lines |Max line length
+    |-------------------|----------|-------------------- |USPS (Stamps.com) |3 |60 |FedEx |3
+    |35 for the first line. 30 for additional lines. |UPS |2 |35 |OnTrac |2 |25
+    """
+
+    model_config = ConfigDict(populate_by_name=True)
+
+    reference1: str
+    """The first line of the custom label message. Some carriers may prefix this line with something like "REF", "Reference", '"""
+    reference2: str
+    """The second line of the custom label message. Some carriers may prefix this line with something like "INV", "Reference 2'"""
+    reference3: str
+    """The third line of the custom label message. Some carriers may prefix this line with something like "PO", "Reference 3", """
+
+
+class Dimensions(BaseModel):
+    """The dimensions of a package"""
+
+    model_config = ConfigDict(populate_by_name=True)
+
+    unit: DimensionUnit
+    """Dimension unit"""
+    length: float
+    """The length of the package, in the specified unit"""
+    width: float
+    """The width of the package, in the specified unit"""
+    height: float
+    """The height of the package, in the specified unit"""
+
+
+class MonetaryValue(BaseModel):
+    """
+    A monetary value, such as the price of a shipping label, the insured value of a package,
+    or an account balance.
+    """
+
+    model_config = ConfigDict(populate_by_name=True)
+
+    currency: str
+    """Currency code"""
+    amount: float
+    """The monetary amount, in the specified currency."""
+
+
 class Weight(BaseModel):
+    """The weight of a package"""
+
+    model_config = ConfigDict(populate_by_name=True)
+
+    value: float
+    """The weight, in the specified unit"""
+    unit: WeightUnit
+    """Weight unit"""
+
+
+class Package(BaseModel):
+    """A package associated with a shipment"""
+
+    model_config = ConfigDict(populate_by_name=True)
+
+    weight: Weight
+    """The package weight"""
+    shipment_package_id: Optional[str] = None
+    """A string that uniquely identifies this shipment package"""
+    package_id: Optional[str] = None
+    """A string that uniquely identifies this [package type]"""
+    package_code: Optional[str] = None
+    """The [package type] such as `thick_envelope`, `small_flat_rate_box`, `large_package`, etc. The code `package` indicates a"""
+    package_name: Optional[str] = None
+    """The name of the of the [package type]"""
+    dimensions: Optional[Dimensions] = None
+    """The package dimensions"""
+    insured_value: Optional[MonetaryValue] = None
+    """The insured value of the package. Requires the `insurance_provider` field of the shipment to be set."""
+    label_messages: Optional[LabelMessages] = None
+    external_package_id: Optional[str] = None
+    """An external package id."""
+    tracking_number: Optional[str] = None
+    """The tracking number for the package. The format depends on the carrier."""
+    content_description: Optional[str] = None
+    """A short description of the package content. Required for shipments moving to, from, and through Mexico."""
+    products: Optional[list[dict[str, Any]]] = None
+    """Details about products inside packages (Information provided would be used on custom documentation)"""
+
+
+class ShippingAddressTo(BaseModel):
+
+    model_config = ConfigDict(populate_by_name=True)
+
+    name: str
+    """The name of a contact person at this address. This field may be set instead of - or in addition to - the `company_name` """
+    phone: str
+    """The phone number of a contact person at this address. The format of this phone number varies depending on the country."""
+    address_line1: str
+    """The first line of the street address. For some addresses, this may be the only line. Other addresses may require 2 or 3 """
+    city_locality: str
+    """The name of the city or locality"""
+    state_province: str
+    """The state or province. For some countries (including the U.S.) only abbreviations are allowed. Other countries allow the"""
+    postal_code: str
+    country_code: str
+    """The two-letter ISO 3166-1 country code"""
+    address_residential_indicator: AddressResidentialIndicator
+    """Indicates whether this is a residential address."""
+    email: Optional[str] = None
+    """Email for the address owner."""
+    company_name: Optional[str] = None
+    """If this is a business address, then the company name should be specified here."""
+    address_line2: Optional[str] = None
+    """The second line of the street address. For some addresses, this line may not be needed."""
+    address_line3: Optional[str] = None
+    """The third line of the street address. For some addresses, this line may not be needed."""
+    instructions: Optional[str] = None
+    """Additional text about how to handle the shipment at this address."""
+    geolocation: Optional[list[dict[str, Any]]] = None
+
+
+class Weigth(BaseModel):
     """The weight of a package"""
 
     model_config = ConfigDict(populate_by_name=True)
@@ -143,185 +296,6 @@ class ShipmentItem(BaseModel):
     """Fulfillment SKU"""
     upc: Optional[str] = None
     """Universal Product Code"""
-
-
-class LabelMessages(BaseModel):
-    """
-    Custom messages to print on the shipping label for the package. These are typically used
-    to print invoice numbers, product numbers, or other internal reference numbers. Not all
-    carriers support label messages. The number of lines and the maximum length of each line
-    also varies by carrier. |Carrier |Max lines |Max line length
-    |-------------------|----------|-------------------- |USPS (Stamps.com) |3 |60 |FedEx |3
-    |35 for the first line. 30 for additional lines. |UPS |2 |35 |OnTrac |2 |25
-    """
-
-    model_config = ConfigDict(populate_by_name=True)
-
-    reference1: str
-    """The first line of the custom label message. Some carriers may prefix this line with something like "REF", "Reference", '"""
-    reference2: str
-    """The second line of the custom label message. Some carriers may prefix this line with something like "INV", "Reference 2'"""
-    reference3: str
-    """The third line of the custom label message. Some carriers may prefix this line with something like "PO", "Reference 3", """
-
-
-class MonetaryValue(BaseModel):
-    """
-    A monetary value, such as the price of a shipping label, the insured value of a package,
-    or an account balance.
-    """
-
-    model_config = ConfigDict(populate_by_name=True)
-
-    currency: str
-    """Currency code"""
-    amount: float
-    """The monetary amount, in the specified currency."""
-
-
-class Dimensions(BaseModel):
-    """The dimensions of a package"""
-
-    model_config = ConfigDict(populate_by_name=True)
-
-    unit: DimensionUnit
-    """Dimension unit"""
-    length: float
-    """The length of the package, in the specified unit"""
-    width: float
-    """The width of the package, in the specified unit"""
-    height: float
-    """The height of the package, in the specified unit"""
-
-
-class Package(BaseModel):
-    """A package associated with a shipment"""
-
-    model_config = ConfigDict(populate_by_name=True)
-
-    weight: Weight
-    """The package weight"""
-    shipment_package_id: Optional[str] = None
-    """A string that uniquely identifies this shipment package"""
-    package_id: Optional[str] = None
-    """A string that uniquely identifies this [package type]"""
-    package_code: Optional[str] = None
-    """The [package type] such as `thick_envelope`, `small_flat_rate_box`, `large_package`, etc. The code `package` indicates a"""
-    package_name: Optional[str] = None
-    """The name of the of the [package type]"""
-    dimensions: Optional[Dimensions] = None
-    """The package dimensions"""
-    insured_value: Optional[MonetaryValue] = None
-    """The insured value of the package. Requires the `insurance_provider` field of the shipment to be set."""
-    label_messages: Optional[LabelMessages] = None
-    external_package_id: Optional[str] = None
-    """An external package id."""
-    tracking_number: Optional[str] = None
-    """The tracking number for the package. The format depends on the carrier."""
-    content_description: Optional[str] = None
-    """A short description of the package content. Required for shipments moving to, from, and through Mexico."""
-    products: Optional[list[dict[str, Any]]] = None
-    """Details about products inside packages (Information provided would be used on custom documentation)"""
-
-
-class ShippingAddress(BaseModel):
-
-    model_config = ConfigDict(populate_by_name=True)
-
-    name: str
-    """The name of a contact person at this address. This field may be set instead of - or in addition to - the `company_name` """
-    phone: str
-    """The phone number of a contact person at this address. The format of this phone number varies depending on the country."""
-    address_line1: str
-    """The first line of the street address. For some addresses, this may be the only line. Other addresses may require 2 or 3 """
-    city_locality: str
-    """The name of the city or locality"""
-    state_province: str
-    """The state or province. For some countries (including the U.S.) only abbreviations are allowed. Other countries allow the"""
-    postal_code: str
-    country_code: str
-    """The two-letter ISO 3166-1 country code"""
-    address_residential_indicator: AddressResidentialIndicator
-    """Indicates whether this is a residential address."""
-    email: Optional[str] = None
-    """Email for the address owner."""
-    company_name: Optional[str] = None
-    """If this is a business address, then the company name should be specified here."""
-    address_line2: Optional[str] = None
-    """The second line of the street address. For some addresses, this line may not be needed."""
-    address_line3: Optional[str] = None
-    """The third line of the street address. For some addresses, this line may not be needed."""
-    instructions: Optional[str] = None
-    """Additional text about how to handle the shipment at this address."""
-
-
-class AdvancedShipmentOptions(BaseModel):
-    """Advanced shipment options"""
-
-    model_config = ConfigDict(populate_by_name=True)
-
-    bill_to_account: Optional[str] = None
-    """This field is used to [bill shipping costs to a third party]. This field must be used in conjunction with the `bill_to_c"""
-    bill_to_country_code: Optional[str] = None
-    """The two-letter ISO 3166-1 country code of the third-party that is responsible for shipping costs."""
-    bill_to_party: Optional[BillToParty] = None
-    """Indicates whether to bill shipping costs to the recipient or to a third-party. When billing to a third-party, the `bill_"""
-    bill_to_postal_code: Optional[str] = None
-    """The postal code of the third-party that is responsible for shipping costs."""
-    contains_alcohol: Optional[bool] = None
-    """Indicates that the shipment contains alcohol."""
-    delivered_duty_paid: Optional[bool] = None
-    """Indicates that the shipper is paying the international delivery duties for this shipment. This option is supported by UP"""
-    dry_ice: Optional[bool] = None
-    """Indicates if the shipment contain dry ice"""
-    dry_ice_weight: Optional[Weight] = None
-    """The weight of the dry ice in the shipment"""
-    non_machinable: Optional[bool] = None
-    """Indicates that the package cannot be processed automatically because it is too large or irregularly shaped. This is prim"""
-    saturday_delivery: Optional[bool] = None
-    """Enables Saturday delivery, if supported by the carrier."""
-    fedex_freight: Optional[dict[str, Any]] = None
-    """Provide details for the Fedex freight service"""
-    use_ups_ground_freight_pricing: Optional[bool] = None
-    """Whether to use [UPS Ground Freight pricing] If enabled, then a `freight_class` must also be specified."""
-    freight_class: Optional[str] = None
-    """The National Motor Freight Traffic Association freight class, such as "77.5", "110", or "250"."""
-    custom_field1: Optional[str] = None
-    """An arbitrary field that can be used to store information about the shipment."""
-    custom_field2: Optional[str] = None
-    """An arbitrary field that can be used to store information about the shipment."""
-    custom_field3: Optional[str] = None
-    """An arbitrary field that can be used to store information about the shipment."""
-    origin_type: Optional[OriginType] = None
-    additional_handling: Optional[bool] = None
-    """Indicate to the carrier that this shipment requires additional handling."""
-    shipper_release: Optional[bool] = None
-    collect_on_delivery: Optional[dict[str, Any]] = None
-    """Defer payment until package is delivered, instead of when it is ordered."""
-    third_party_consignee: Optional[bool] = None
-    """Third Party Consignee option is a value-added service that allows the shipper to supply goods without commercial invoice"""
-    dangerous_goods: Optional[bool] = None
-    """Indicates if the Dangerous goods are present in the shipment"""
-    dangerous_goods_contact: Optional[dict[str, Any]] = None
-    """Contact information for Dangerous goods"""
-    windsor_framework_details: Optional[dict[str, Any]] = None
-    """The Windsor framework is a new regulation in the UK that simplifies customs procedures for goods moved from the UK mainl"""
-    ancillary_endorsements_option: Optional[str] = None
-    """Ancillary endorsements option for the shipment"""
-    return_pickup_attempts: Optional[int] = None
-    """Number of return pickup attempts"""
-    own_document_upload: Optional[bool] = None
-    """Indicates if own document upload is enabled"""
-    limited_quantity: Optional[bool] = None
-    """Indicates if the shipment contains limited quantities"""
-    event_notification: Optional[bool] = None
-    """Indicates if event notifications are enabled"""
-    delivery_as_addressed: Optional[bool] = None
-    """Instructs the carrier to deliver the package only to the exact address provided"""
-    return_after_first_attempt: Optional[bool] = None
-    """Ensures the shipment is immediately flagged for return to the sender if the initial delivery attempt fails"""
-    regulated_content_type: Optional[RegulatedContentType] = None
-    """Indicates the category of goods in the shipment that is subject to special regulatory or compliance requirements"""
 
 
 class ImporterOfRecords(BaseModel):
@@ -403,17 +377,73 @@ class InternationalShipmentOptions(BaseModel):
     """Customs declarations for each item in the shipment. (Please provide this information under `products` inside `packages`)"""
 
 
-class TaxIdentifier(BaseModel):
-    """A tax identifier object"""
+class AdvancedShipmentOptions(BaseModel):
+    """Advanced shipment options"""
 
     model_config = ConfigDict(populate_by_name=True)
 
-    taxable_entity_type: TaxableEntityType
-    identifier_type: IdentifierType
-    issuing_authority: str
-    """The authority that issued this tax. This must be a valid 2 character ISO 3166 Alpha 2 country code."""
-    value: str
-    """The value of the identifier"""
+    bill_to_account: Optional[str] = None
+    """This field is used to [bill shipping costs to a third party]. This field must be used in conjunction with the `bill_to_c"""
+    bill_to_country_code: Optional[str] = None
+    """The two-letter ISO 3166-1 country code of the third-party that is responsible for shipping costs."""
+    bill_to_party: Optional[BillToParty] = None
+    """Indicates whether to bill shipping costs to the recipient or to a third-party. When billing to a third-party, the `bill_"""
+    bill_to_postal_code: Optional[str] = None
+    """The postal code of the third-party that is responsible for shipping costs."""
+    contains_alcohol: Optional[bool] = None
+    """Indicates that the shipment contains alcohol."""
+    delivered_duty_paid: Optional[bool] = None
+    """Indicates that the shipper is paying the international delivery duties for this shipment. This option is supported by UP"""
+    dry_ice: Optional[bool] = None
+    """Indicates if the shipment contain dry ice"""
+    dry_ice_weight: Optional[Weight] = None
+    """The weight of the dry ice in the shipment"""
+    non_machinable: Optional[bool] = None
+    """Indicates that the package cannot be processed automatically because it is too large or irregularly shaped. This is prim"""
+    saturday_delivery: Optional[bool] = None
+    """Enables Saturday delivery, if supported by the carrier."""
+    fedex_freight: Optional[dict[str, Any]] = None
+    """Provide details for the Fedex freight service"""
+    use_ups_ground_freight_pricing: Optional[bool] = None
+    """Whether to use [UPS Ground Freight pricing] If enabled, then a `freight_class` must also be specified."""
+    freight_class: Optional[str] = None
+    """The National Motor Freight Traffic Association freight class, such as "77.5", "110", or "250"."""
+    custom_field1: Optional[str] = None
+    """An arbitrary field that can be used to store information about the shipment."""
+    custom_field2: Optional[str] = None
+    """An arbitrary field that can be used to store information about the shipment."""
+    custom_field3: Optional[str] = None
+    """An arbitrary field that can be used to store information about the shipment."""
+    origin_type: Optional[OriginType] = None
+    additional_handling: Optional[bool] = None
+    """Indicate to the carrier that this shipment requires additional handling."""
+    shipper_release: Optional[bool] = None
+    collect_on_delivery: Optional[dict[str, Any]] = None
+    """Defer payment until package is delivered, instead of when it is ordered."""
+    third_party_consignee: Optional[bool] = None
+    """Third Party Consignee option is a value-added service that allows the shipper to supply goods without commercial invoice"""
+    dangerous_goods: Optional[bool] = None
+    """Indicates if the Dangerous goods are present in the shipment"""
+    dangerous_goods_contact: Optional[dict[str, Any]] = None
+    """Contact information for Dangerous goods"""
+    windsor_framework_details: Optional[dict[str, Any]] = None
+    """The Windsor framework is a new regulation in the UK that simplifies customs procedures for goods moved from the UK mainl"""
+    ancillary_endorsements_option: Optional[str] = None
+    """Ancillary endorsements option for the shipment"""
+    return_pickup_attempts: Optional[int] = None
+    """Number of return pickup attempts"""
+    own_document_upload: Optional[bool] = None
+    """Indicates if own document upload is enabled"""
+    limited_quantity: Optional[bool] = None
+    """Indicates if the shipment contains limited quantities"""
+    event_notification: Optional[bool] = None
+    """Indicates if event notifications are enabled"""
+    delivery_as_addressed: Optional[bool] = None
+    """Instructs the carrier to deliver the package only to the exact address provided"""
+    return_after_first_attempt: Optional[bool] = None
+    """Ensures the shipment is immediately flagged for return to the sender if the initial delivery attempt fails"""
+    regulated_content_type: Optional[RegulatedContentType] = None
+    """Indicates the category of goods in the shipment that is subject to special regulatory or compliance requirements"""
 
 
 class Tag(BaseModel):
@@ -430,47 +460,17 @@ class Tag(BaseModel):
     """The tag name."""
 
 
-class Weigth(BaseModel):
-    """The weight of a package"""
+class TaxIdentifier(BaseModel):
+    """A tax identifier object"""
 
     model_config = ConfigDict(populate_by_name=True)
 
-    value: float
-    """The weight, in the specified unit"""
-    unit: WeightUnit
-    """Weight unit"""
-
-
-class ShippingAddressTo(BaseModel):
-
-    model_config = ConfigDict(populate_by_name=True)
-
-    name: str
-    """The name of a contact person at this address. This field may be set instead of - or in addition to - the `company_name` """
-    phone: str
-    """The phone number of a contact person at this address. The format of this phone number varies depending on the country."""
-    address_line1: str
-    """The first line of the street address. For some addresses, this may be the only line. Other addresses may require 2 or 3 """
-    city_locality: str
-    """The name of the city or locality"""
-    state_province: str
-    """The state or province. For some countries (including the U.S.) only abbreviations are allowed. Other countries allow the"""
-    postal_code: str
-    country_code: str
-    """The two-letter ISO 3166-1 country code"""
-    address_residential_indicator: AddressResidentialIndicator
-    """Indicates whether this is a residential address."""
-    email: Optional[str] = None
-    """Email for the address owner."""
-    company_name: Optional[str] = None
-    """If this is a business address, then the company name should be specified here."""
-    address_line2: Optional[str] = None
-    """The second line of the street address. For some addresses, this line may not be needed."""
-    address_line3: Optional[str] = None
-    """The third line of the street address. For some addresses, this line may not be needed."""
-    instructions: Optional[str] = None
-    """Additional text about how to handle the shipment at this address."""
-    geolocation: Optional[list[dict[str, Any]]] = None
+    taxable_entity_type: TaxableEntityType
+    identifier_type: IdentifierType
+    issuing_authority: str
+    """The authority that issued this tax. This must be a valid 2 character ISO 3166 Alpha 2 country code."""
+    value: str
+    """The value of the identifier"""
 
 
 class AddressValidatingShipment(BaseModel):

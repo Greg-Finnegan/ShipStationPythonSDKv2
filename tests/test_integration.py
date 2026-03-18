@@ -76,7 +76,7 @@ class TestCarriers:
 
 class TestShipments:
     def test_list_shipments(self, client: ShipStation) -> None:
-        result = client.shipments.list(pickup_id="")
+        result = client.shipments.list()
         assert isinstance(result, ListShipmentsResponseBody)
         print(f"{result.total} shipments found.")
         assert result.page >= 1
