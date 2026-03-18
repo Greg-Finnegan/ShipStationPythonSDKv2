@@ -5,7 +5,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Any, Optional, Union
 
-from .._api import ApiClient
+from .._api import ApiClient, serialize_body, serialize_param
 
 
 class FulfillmentsResource:
@@ -38,39 +38,39 @@ class FulfillmentsResource:
         """Retrieve a list of fulfillments based on various filter criteria. You can filter by shipment details, tracking information, dates, and more to find the specific fulfillments you need."""
         params: dict[str, Any] = {}
         if ship_to_name is not None:
-            params["ship_to_name"] = ship_to_name.value if hasattr(ship_to_name, 'value') else (ship_to_name.isoformat() if hasattr(ship_to_name, 'isoformat') else ship_to_name)
+            params["ship_to_name"] = serialize_param(ship_to_name)
         if ship_to_country_code is not None:
-            params["ship_to_country_code"] = ship_to_country_code.value if hasattr(ship_to_country_code, 'value') else (ship_to_country_code.isoformat() if hasattr(ship_to_country_code, 'isoformat') else ship_to_country_code)
+            params["ship_to_country_code"] = serialize_param(ship_to_country_code)
         if shipment_number is not None:
-            params["shipment_number"] = shipment_number.value if hasattr(shipment_number, 'value') else (shipment_number.isoformat() if hasattr(shipment_number, 'isoformat') else shipment_number)
+            params["shipment_number"] = serialize_param(shipment_number)
         if shipment_id is not None:
-            params["shipment_id"] = shipment_id.value if hasattr(shipment_id, 'value') else (shipment_id.isoformat() if hasattr(shipment_id, 'isoformat') else shipment_id)
+            params["shipment_id"] = serialize_param(shipment_id)
         if fulfillment_id is not None:
-            params["fulfillment_id"] = fulfillment_id.value if hasattr(fulfillment_id, 'value') else (fulfillment_id.isoformat() if hasattr(fulfillment_id, 'isoformat') else fulfillment_id)
+            params["fulfillment_id"] = serialize_param(fulfillment_id)
         if batch_id is not None:
-            params["batch_id"] = batch_id.value if hasattr(batch_id, 'value') else (batch_id.isoformat() if hasattr(batch_id, 'isoformat') else batch_id)
+            params["batch_id"] = serialize_param(batch_id)
         if order_source_id is not None:
-            params["order_source_id"] = order_source_id.value if hasattr(order_source_id, 'value') else (order_source_id.isoformat() if hasattr(order_source_id, 'isoformat') else order_source_id)
+            params["order_source_id"] = serialize_param(order_source_id)
         if fulfillment_provider_code is not None:
-            params["fulfillment_provider_code"] = fulfillment_provider_code.value if hasattr(fulfillment_provider_code, 'value') else (fulfillment_provider_code.isoformat() if hasattr(fulfillment_provider_code, 'isoformat') else fulfillment_provider_code)
+            params["fulfillment_provider_code"] = serialize_param(fulfillment_provider_code)
         if tracking_number is not None:
-            params["tracking_number"] = tracking_number.value if hasattr(tracking_number, 'value') else (tracking_number.isoformat() if hasattr(tracking_number, 'isoformat') else tracking_number)
+            params["tracking_number"] = serialize_param(tracking_number)
         if ship_date_start is not None:
-            params["ship_date_start"] = ship_date_start.value if hasattr(ship_date_start, 'value') else (ship_date_start.isoformat() if hasattr(ship_date_start, 'isoformat') else ship_date_start)
+            params["ship_date_start"] = serialize_param(ship_date_start)
         if ship_date_end is not None:
-            params["ship_date_end"] = ship_date_end.value if hasattr(ship_date_end, 'value') else (ship_date_end.isoformat() if hasattr(ship_date_end, 'isoformat') else ship_date_end)
+            params["ship_date_end"] = serialize_param(ship_date_end)
         if create_date_start is not None:
-            params["create_date_start"] = create_date_start.value if hasattr(create_date_start, 'value') else (create_date_start.isoformat() if hasattr(create_date_start, 'isoformat') else create_date_start)
+            params["create_date_start"] = serialize_param(create_date_start)
         if create_date_end is not None:
-            params["create_date_end"] = create_date_end.value if hasattr(create_date_end, 'value') else (create_date_end.isoformat() if hasattr(create_date_end, 'isoformat') else create_date_end)
+            params["create_date_end"] = serialize_param(create_date_end)
         if page is not None:
-            params["page"] = page.value if hasattr(page, 'value') else (page.isoformat() if hasattr(page, 'isoformat') else page)
+            params["page"] = serialize_param(page)
         if page_size is not None:
-            params["page_size"] = page_size.value if hasattr(page_size, 'value') else (page_size.isoformat() if hasattr(page_size, 'isoformat') else page_size)
+            params["page_size"] = serialize_param(page_size)
         if sort_dir is not None:
-            params["sort_dir"] = sort_dir.value if hasattr(sort_dir, 'value') else (sort_dir.isoformat() if hasattr(sort_dir, 'isoformat') else sort_dir)
+            params["sort_dir"] = serialize_param(sort_dir)
         if sort_by is not None:
-            params["sort_by"] = sort_by.value if hasattr(sort_by, 'value') else (sort_by.isoformat() if hasattr(sort_by, 'isoformat') else sort_by)
+            params["sort_by"] = serialize_param(sort_by)
         response = self._api.request("GET", "/v2/fulfillments", params=params, json_body=None)
         return response.json()  # type: ignore[return-value]
 

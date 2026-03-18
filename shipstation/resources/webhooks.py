@@ -5,7 +5,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Any, Optional, Union
 
-from .._api import ApiClient
+from .._api import ApiClient, serialize_body, serialize_param
 from ..models import (
     CreateWebhookRequestBody,
     CreateWebhookResponseBody,
@@ -27,7 +27,7 @@ class WebhooksResource:
 
     def create(self, *, body: CreateWebhookRequestBody) -> CreateWebhookResponseBody:
         """Create a webhook for specific events in the environment."""
-        response = self._api.request("POST", "/v2/environment/webhooks", params=None, json_body=body.model_dump(exclude_none=True, by_alias=True) if hasattr(body, 'model_dump') else body)
+        response = self._api.request("POST", "/v2/environment/webhooks", params=None, json_body=serialize_body(body))
         return CreateWebhookResponseBody.model_validate(response.json())
 
     def get_by_id(self, webhook_id: str) -> GetWebhookByIdResponseBody:
@@ -42,7 +42,7 @@ class WebhooksResource:
         body: UpdateWebhookRequestBody,
     ) -> None:
         """Update the webhook url property"""
-        response = self._api.request("PUT", f"/v2/environment/webhooks/{webhook_id}", params=None, json_body=body.model_dump(exclude_none=True, by_alias=True) if hasattr(body, 'model_dump') else body)
+        response = self._api.request("PUT", f"/v2/environment/webhooks/{webhook_id}", params=None, json_body=serialize_body(body))
         return None
 
     def delete(self, webhook_id: str) -> None:

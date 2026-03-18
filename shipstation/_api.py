@@ -22,6 +22,22 @@ class ShipStationError(Exception):
         super().__init__(f"[{status_code}] {message}")
 
 
+def serialize_param(value: Any) -> Any:
+    """Serialize a parameter value for query string use."""
+    if hasattr(value, "value"):
+        return value.value
+    if hasattr(value, "isoformat"):
+        return value.isoformat()
+    return value
+
+
+def serialize_body(body: Any) -> Any:
+    """Serialize a request body for JSON use."""
+    if hasattr(body, "model_dump"):
+        return body.model_dump(exclude_none=True, by_alias=True)
+    return body
+
+
 class ApiClient:
     """Thin wrapper around ``requests.Session`` for ShipStation API calls."""
 

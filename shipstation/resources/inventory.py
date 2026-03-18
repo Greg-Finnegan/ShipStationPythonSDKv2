@@ -5,7 +5,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Any, Optional, Union
 
-from .._api import ApiClient
+from .._api import ApiClient, serialize_body, serialize_param
 
 
 class InventoryResource:
@@ -25,15 +25,15 @@ class InventoryResource:
     ) -> Any:
         params: dict[str, Any] = {}
         if sku is not None:
-            params["sku"] = sku.value if hasattr(sku, 'value') else (sku.isoformat() if hasattr(sku, 'isoformat') else sku)
+            params["sku"] = serialize_param(sku)
         if inventory_warehouse_id is not None:
-            params["inventory_warehouse_id"] = inventory_warehouse_id.value if hasattr(inventory_warehouse_id, 'value') else (inventory_warehouse_id.isoformat() if hasattr(inventory_warehouse_id, 'isoformat') else inventory_warehouse_id)
+            params["inventory_warehouse_id"] = serialize_param(inventory_warehouse_id)
         if inventory_location_id is not None:
-            params["inventory_location_id"] = inventory_location_id.value if hasattr(inventory_location_id, 'value') else (inventory_location_id.isoformat() if hasattr(inventory_location_id, 'isoformat') else inventory_location_id)
+            params["inventory_location_id"] = serialize_param(inventory_location_id)
         if group_by is not None:
-            params["group_by"] = group_by.value if hasattr(group_by, 'value') else (group_by.isoformat() if hasattr(group_by, 'isoformat') else group_by)
+            params["group_by"] = serialize_param(group_by)
         if page_size is not None:
-            params["page_size"] = page_size.value if hasattr(page_size, 'value') else (page_size.isoformat() if hasattr(page_size, 'isoformat') else page_size)
+            params["page_size"] = serialize_param(page_size)
         response = self._api.request("GET", "/v2/inventory", params=params, json_body=None)
         return response.json()  # type: ignore[return-value]
 
@@ -44,7 +44,7 @@ class InventoryResource:
     def get_warehouses(self, *, page_size: Optional[int] = None) -> Any:
         params: dict[str, Any] = {}
         if page_size is not None:
-            params["page_size"] = page_size.value if hasattr(page_size, 'value') else (page_size.isoformat() if hasattr(page_size, 'isoformat') else page_size)
+            params["page_size"] = serialize_param(page_size)
         response = self._api.request("GET", "/v2/inventory_warehouses", params=params, json_body=None)
         return response.json()  # type: ignore[return-value]
 
@@ -68,14 +68,14 @@ class InventoryResource:
     ) -> None:
         params: dict[str, Any] = {}
         if remove_inventory is not None:
-            params["remove_inventory"] = remove_inventory.value if hasattr(remove_inventory, 'value') else (remove_inventory.isoformat() if hasattr(remove_inventory, 'isoformat') else remove_inventory)
+            params["remove_inventory"] = serialize_param(remove_inventory)
         response = self._api.request("DELETE", f"/v2/inventory_warehouses/{inventory_warehouse_id}", params=params, json_body=None)
         return None
 
     def list_locations(self, *, page_size: Optional[int] = None) -> Any:
         params: dict[str, Any] = {}
         if page_size is not None:
-            params["page_size"] = page_size.value if hasattr(page_size, 'value') else (page_size.isoformat() if hasattr(page_size, 'isoformat') else page_size)
+            params["page_size"] = serialize_param(page_size)
         response = self._api.request("GET", "/v2/inventory_locations", params=params, json_body=None)
         return response.json()  # type: ignore[return-value]
 
@@ -99,6 +99,6 @@ class InventoryResource:
     ) -> None:
         params: dict[str, Any] = {}
         if remove_inventory is not None:
-            params["remove_inventory"] = remove_inventory.value if hasattr(remove_inventory, 'value') else (remove_inventory.isoformat() if hasattr(remove_inventory, 'isoformat') else remove_inventory)
+            params["remove_inventory"] = serialize_param(remove_inventory)
         response = self._api.request("DELETE", f"/v2/inventory_locations/{inventory_location_id}", params=params, json_body=None)
         return None

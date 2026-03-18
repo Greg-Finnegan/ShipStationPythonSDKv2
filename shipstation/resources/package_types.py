@@ -5,7 +5,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Any, Optional, Union
 
-from .._api import ApiClient
+from .._api import ApiClient, serialize_body, serialize_param
 from ..models import (
     CreatePackageTypeRequestBody,
     CreatePackageTypeResponseBody,
@@ -28,7 +28,7 @@ class PackageTypesResource:
 
     def create(self, *, body: CreatePackageTypeRequestBody) -> CreatePackageTypeResponseBody:
         """Create a custom package type to better assist in getting accurate rate estimates"""
-        response = self._api.request("POST", "/v2/packages", params=None, json_body=body.model_dump(exclude_none=True, by_alias=True) if hasattr(body, 'model_dump') else body)
+        response = self._api.request("POST", "/v2/packages", params=None, json_body=serialize_body(body))
         return CreatePackageTypeResponseBody.model_validate(response.json())
 
     def get_by_id(self, package_id: str) -> GetPackageTypeByIdResponseBody:
@@ -43,7 +43,7 @@ class PackageTypesResource:
         body: UpdatePackageTypeRequestBody,
     ) -> None:
         """Update the custom package type object by ID"""
-        response = self._api.request("PUT", f"/v2/packages/{package_id}", params=None, json_body=body.model_dump(exclude_none=True, by_alias=True) if hasattr(body, 'model_dump') else body)
+        response = self._api.request("PUT", f"/v2/packages/{package_id}", params=None, json_body=serialize_body(body))
         return None
 
     def delete(self, package_id: str) -> None:

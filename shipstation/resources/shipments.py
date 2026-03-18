@@ -5,7 +5,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Any, Optional, Union
 
-from .._api import ApiClient
+from .._api import ApiClient, serialize_body, serialize_param
 from ..models import (
     CreateShipmentsRequestBody,
     CreateShipmentsResponseBody,
@@ -54,49 +54,49 @@ class ShipmentsResource:
         """Get list of Shipments"""
         params: dict[str, Any] = {}
         if shipment_status is not None:
-            params["shipment_status"] = shipment_status.value if hasattr(shipment_status, 'value') else (shipment_status.isoformat() if hasattr(shipment_status, 'isoformat') else shipment_status)
+            params["shipment_status"] = serialize_param(shipment_status)
         if batch_id is not None:
-            params["batch_id"] = batch_id.value if hasattr(batch_id, 'value') else (batch_id.isoformat() if hasattr(batch_id, 'isoformat') else batch_id)
+            params["batch_id"] = serialize_param(batch_id)
         if pickup_id is not None:
-            params["pickup_id"] = pickup_id.value if hasattr(pickup_id, 'value') else (pickup_id.isoformat() if hasattr(pickup_id, 'isoformat') else pickup_id)
+            params["pickup_id"] = serialize_param(pickup_id)
         if created_at_start is not None:
-            params["created_at_start"] = created_at_start.value if hasattr(created_at_start, 'value') else (created_at_start.isoformat() if hasattr(created_at_start, 'isoformat') else created_at_start)
+            params["created_at_start"] = serialize_param(created_at_start)
         if created_at_end is not None:
-            params["created_at_end"] = created_at_end.value if hasattr(created_at_end, 'value') else (created_at_end.isoformat() if hasattr(created_at_end, 'isoformat') else created_at_end)
+            params["created_at_end"] = serialize_param(created_at_end)
         if modified_at_start is not None:
-            params["modified_at_start"] = modified_at_start.value if hasattr(modified_at_start, 'value') else (modified_at_start.isoformat() if hasattr(modified_at_start, 'isoformat') else modified_at_start)
+            params["modified_at_start"] = serialize_param(modified_at_start)
         if modified_at_end is not None:
-            params["modified_at_end"] = modified_at_end.value if hasattr(modified_at_end, 'value') else (modified_at_end.isoformat() if hasattr(modified_at_end, 'isoformat') else modified_at_end)
+            params["modified_at_end"] = serialize_param(modified_at_end)
         if page is not None:
-            params["page"] = page.value if hasattr(page, 'value') else (page.isoformat() if hasattr(page, 'isoformat') else page)
+            params["page"] = serialize_param(page)
         if page_size is not None:
-            params["page_size"] = page_size.value if hasattr(page_size, 'value') else (page_size.isoformat() if hasattr(page_size, 'isoformat') else page_size)
+            params["page_size"] = serialize_param(page_size)
         if sales_order_id is not None:
-            params["sales_order_id"] = sales_order_id.value if hasattr(sales_order_id, 'value') else (sales_order_id.isoformat() if hasattr(sales_order_id, 'isoformat') else sales_order_id)
+            params["sales_order_id"] = serialize_param(sales_order_id)
         if sort_dir is not None:
-            params["sort_dir"] = sort_dir.value if hasattr(sort_dir, 'value') else (sort_dir.isoformat() if hasattr(sort_dir, 'isoformat') else sort_dir)
+            params["sort_dir"] = serialize_param(sort_dir)
         if shipment_number is not None:
-            params["shipment_number"] = shipment_number.value if hasattr(shipment_number, 'value') else (shipment_number.isoformat() if hasattr(shipment_number, 'isoformat') else shipment_number)
+            params["shipment_number"] = serialize_param(shipment_number)
         if ship_to_name is not None:
-            params["ship_to_name"] = ship_to_name.value if hasattr(ship_to_name, 'value') else (ship_to_name.isoformat() if hasattr(ship_to_name, 'isoformat') else ship_to_name)
+            params["ship_to_name"] = serialize_param(ship_to_name)
         if item_keyword is not None:
-            params["item_keyword"] = item_keyword.value if hasattr(item_keyword, 'value') else (item_keyword.isoformat() if hasattr(item_keyword, 'isoformat') else item_keyword)
+            params["item_keyword"] = serialize_param(item_keyword)
         if payment_date_start is not None:
-            params["payment_date_start"] = payment_date_start.value if hasattr(payment_date_start, 'value') else (payment_date_start.isoformat() if hasattr(payment_date_start, 'isoformat') else payment_date_start)
+            params["payment_date_start"] = serialize_param(payment_date_start)
         if payment_date_end is not None:
-            params["payment_date_end"] = payment_date_end.value if hasattr(payment_date_end, 'value') else (payment_date_end.isoformat() if hasattr(payment_date_end, 'isoformat') else payment_date_end)
+            params["payment_date_end"] = serialize_param(payment_date_end)
         if store_id is not None:
-            params["store_id"] = store_id.value if hasattr(store_id, 'value') else (store_id.isoformat() if hasattr(store_id, 'isoformat') else store_id)
+            params["store_id"] = serialize_param(store_id)
         if external_shipment_id is not None:
-            params["external_shipment_id"] = external_shipment_id.value if hasattr(external_shipment_id, 'value') else (external_shipment_id.isoformat() if hasattr(external_shipment_id, 'isoformat') else external_shipment_id)
+            params["external_shipment_id"] = serialize_param(external_shipment_id)
         if sort_by is not None:
-            params["sort_by"] = sort_by.value if hasattr(sort_by, 'value') else (sort_by.isoformat() if hasattr(sort_by, 'isoformat') else sort_by)
+            params["sort_by"] = serialize_param(sort_by)
         response = self._api.request("GET", "/v2/shipments", params=params, json_body=None)
         return ListShipmentsResponseBody.model_validate(response.json())
 
     def create(self, *, body: CreateShipmentsRequestBody) -> CreateShipmentsResponseBody:
         """Create one or more shipments"""
-        response = self._api.request("POST", "/v2/shipments", params=None, json_body=body.model_dump(exclude_none=True, by_alias=True) if hasattr(body, 'model_dump') else body)
+        response = self._api.request("POST", "/v2/shipments", params=None, json_body=serialize_body(body))
         return CreateShipmentsResponseBody.model_validate(response.json())
 
     def get_by_external_id(self, external_shipment_id: str) -> GetShipmentByExternalIdResponseBody:
@@ -123,7 +123,7 @@ class ShipmentsResource:
         """Get Rates for the shipment information associated with the shipment ID"""
         params: dict[str, Any] = {}
         if created_at_start is not None:
-            params["created_at_start"] = created_at_start.value if hasattr(created_at_start, 'value') else (created_at_start.isoformat() if hasattr(created_at_start, 'isoformat') else created_at_start)
+            params["created_at_start"] = serialize_param(created_at_start)
         response = self._api.request("GET", f"/v2/shipments/{shipment_id}/rates", params=params, json_body=None)
         return ListShipmentRatesResponseBody.model_validate(response.json())
 

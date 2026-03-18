@@ -5,7 +5,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Any, Optional, Union
 
-from .._api import ApiClient
+from .._api import ApiClient, serialize_body, serialize_param
 from ..models import (
     CreateAndProcessBatchRequestBody,
     CreateBatchRequestBody,
@@ -43,23 +43,23 @@ class BatchesResource:
         """List the batches associated with your ShipStation account."""
         params: dict[str, Any] = {}
         if status is not None:
-            params["status"] = status.value if hasattr(status, 'value') else (status.isoformat() if hasattr(status, 'isoformat') else status)
+            params["status"] = serialize_param(status)
         if page is not None:
-            params["page"] = page.value if hasattr(page, 'value') else (page.isoformat() if hasattr(page, 'isoformat') else page)
+            params["page"] = serialize_param(page)
         if page_size is not None:
-            params["page_size"] = page_size.value if hasattr(page_size, 'value') else (page_size.isoformat() if hasattr(page_size, 'isoformat') else page_size)
+            params["page_size"] = serialize_param(page_size)
         if sort_dir is not None:
-            params["sort_dir"] = sort_dir.value if hasattr(sort_dir, 'value') else (sort_dir.isoformat() if hasattr(sort_dir, 'isoformat') else sort_dir)
+            params["sort_dir"] = serialize_param(sort_dir)
         if batch_number is not None:
-            params["batch_number"] = batch_number.value if hasattr(batch_number, 'value') else (batch_number.isoformat() if hasattr(batch_number, 'isoformat') else batch_number)
+            params["batch_number"] = serialize_param(batch_number)
         if sort_by is not None:
-            params["sort_by"] = sort_by.value if hasattr(sort_by, 'value') else (sort_by.isoformat() if hasattr(sort_by, 'isoformat') else sort_by)
+            params["sort_by"] = serialize_param(sort_by)
         response = self._api.request("GET", "/v2/batches", params=params, json_body=None)
         return ListBatchesResponseBody.model_validate(response.json())
 
     def create(self, *, body: Union[CreateBatchRequestBody, CreateAndProcessBatchRequestBody]) -> CreateBatchResponseBody:
         """Create a batch containing multiple labels."""
-        response = self._api.request("POST", "/v2/batches", params=None, json_body=body.model_dump(exclude_none=True, by_alias=True) if hasattr(body, 'model_dump') else body)
+        response = self._api.request("POST", "/v2/batches", params=None, json_body=serialize_body(body))
         return CreateBatchResponseBody.model_validate(response.json())
 
     def get_by_external_id(self, external_batch_id: str) -> GetBatchByExternalIdResponseBody:
@@ -89,7 +89,7 @@ class BatchesResource:
         body: CreateAndProcessBatchRequestBody,
     ) -> None:
         """Add a shipment or rate to a batch."""
-        response = self._api.request("POST", f"/v2/batches/{batch_id}/add", params=None, json_body=body.model_dump(exclude_none=True, by_alias=True) if hasattr(body, 'model_dump') else body)
+        response = self._api.request("POST", f"/v2/batches/{batch_id}/add", params=None, json_body=serialize_body(body))
         return None
 
     def list_errors(
@@ -102,9 +102,9 @@ class BatchesResource:
         """Errors in batches must be handled differently from synchronous requests. You must retrieve the status of your batch by getting a batch and getting an overview of the statuses or by listing the batch e"""
         params: dict[str, Any] = {}
         if page is not None:
-            params["page"] = page.value if hasattr(page, 'value') else (page.isoformat() if hasattr(page, 'isoformat') else page)
+            params["page"] = serialize_param(page)
         if pagesize is not None:
-            params["pagesize"] = pagesize.value if hasattr(pagesize, 'value') else (pagesize.isoformat() if hasattr(pagesize, 'isoformat') else pagesize)
+            params["pagesize"] = serialize_param(pagesize)
         response = self._api.request("GET", f"/v2/batches/{batch_id}/errors", params=params, json_body=None)
         return ListBatchErrorsResponseBody.model_validate(response.json())
 
@@ -115,7 +115,7 @@ class BatchesResource:
         body: ProcessBatchRequestBody,
     ) -> None:
         """Create and purchase the labels for the shipments included in the batch."""
-        response = self._api.request("POST", f"/v2/batches/{batch_id}/process/labels", params=None, json_body=body.model_dump(exclude_none=True, by_alias=True) if hasattr(body, 'model_dump') else body)
+        response = self._api.request("POST", f"/v2/batches/{batch_id}/process/labels", params=None, json_body=serialize_body(body))
         return None
 
     def remove_from(
@@ -125,5 +125,5 @@ class BatchesResource:
         body: RemoveFromBatchRequestBody,
     ) -> None:
         """Remove specific shipment ids or rate ids from a batch."""
-        response = self._api.request("POST", f"/v2/batches/{batch_id}/remove", params=None, json_body=body.model_dump(exclude_none=True, by_alias=True) if hasattr(body, 'model_dump') else body)
+        response = self._api.request("POST", f"/v2/batches/{batch_id}/remove", params=None, json_body=serialize_body(body))
         return None

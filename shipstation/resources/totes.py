@@ -5,7 +5,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Any, Optional, Union
 
-from .._api import ApiClient
+from .._api import ApiClient, serialize_body, serialize_param
 from ..models import (
     BulkCreateToteResponse,
     Tote,
@@ -24,13 +24,13 @@ class TotesResource:
         """Get all totes for the seller, optionally filtered by warehouse."""
         params: dict[str, Any] = {}
         if inventory_warehouse_id is not None:
-            params["inventory_warehouse_id"] = inventory_warehouse_id.value if hasattr(inventory_warehouse_id, 'value') else (inventory_warehouse_id.isoformat() if hasattr(inventory_warehouse_id, 'isoformat') else inventory_warehouse_id)
+            params["inventory_warehouse_id"] = serialize_param(inventory_warehouse_id)
         response = self._api.request("GET", "/v2/totes", params=params, json_body=None)
         return response.json()  # type: ignore[return-value]
 
     def create_batch(self, *, body: ToteCreateBatchRequest) -> BulkCreateToteResponse:
         """Create multiple totes at once. Returns both successfully created totes and any failures."""
-        response = self._api.request("POST", "/v2/totes", params=None, json_body=body.model_dump(exclude_none=True, by_alias=True) if hasattr(body, 'model_dump') else body)
+        response = self._api.request("POST", "/v2/totes", params=None, json_body=serialize_body(body))
         return BulkCreateToteResponse.model_validate(response.json())
 
     def get_quantities(self) -> Any:
@@ -50,7 +50,7 @@ class TotesResource:
         body: ToteUpdateRequest,
     ) -> None:
         """Update the name or barcode of an existing tote."""
-        response = self._api.request("PUT", f"/v2/totes/{tote_id}", params=None, json_body=body.model_dump(exclude_none=True, by_alias=True) if hasattr(body, 'model_dump') else body)
+        response = self._api.request("PUT", f"/v2/totes/{tote_id}", params=None, json_body=serialize_body(body))
         return None
 
     def delete(self, tote_id: str) -> None:

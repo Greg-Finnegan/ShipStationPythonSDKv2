@@ -5,7 +5,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Any, Optional, Union
 
-from .._api import ApiClient
+from .._api import ApiClient, serialize_body, serialize_param
 from ..models import (
     DeleteScheduledPickupResponseBody,
     ListPickupResponseBody,
@@ -34,23 +34,23 @@ class PackagePickupsResource:
         """List all pickups that have been scheduled for this carrier"""
         params: dict[str, Any] = {}
         if carrier_id is not None:
-            params["carrier_id"] = carrier_id.value if hasattr(carrier_id, 'value') else (carrier_id.isoformat() if hasattr(carrier_id, 'isoformat') else carrier_id)
+            params["carrier_id"] = serialize_param(carrier_id)
         if warehouse_id is not None:
-            params["warehouse_id"] = warehouse_id.value if hasattr(warehouse_id, 'value') else (warehouse_id.isoformat() if hasattr(warehouse_id, 'isoformat') else warehouse_id)
+            params["warehouse_id"] = serialize_param(warehouse_id)
         if created_at_start is not None:
-            params["created_at_start"] = created_at_start.value if hasattr(created_at_start, 'value') else (created_at_start.isoformat() if hasattr(created_at_start, 'isoformat') else created_at_start)
+            params["created_at_start"] = serialize_param(created_at_start)
         if created_at_end is not None:
-            params["created_at_end"] = created_at_end.value if hasattr(created_at_end, 'value') else (created_at_end.isoformat() if hasattr(created_at_end, 'isoformat') else created_at_end)
+            params["created_at_end"] = serialize_param(created_at_end)
         if page is not None:
-            params["page"] = page.value if hasattr(page, 'value') else (page.isoformat() if hasattr(page, 'isoformat') else page)
+            params["page"] = serialize_param(page)
         if page_size is not None:
-            params["page_size"] = page_size.value if hasattr(page_size, 'value') else (page_size.isoformat() if hasattr(page_size, 'isoformat') else page_size)
+            params["page_size"] = serialize_param(page_size)
         response = self._api.request("GET", "/v2/pickups", params=params, json_body=None)
         return ListPickupResponseBody.model_validate(response.json())
 
     def schedule(self, *, body: SchedulePickupRequestBody) -> SchedulePickupResponseBody:
         """Schedule a package pickup with a carrier"""
-        response = self._api.request("POST", "/v2/pickups", params=None, json_body=body.model_dump(exclude_none=True, by_alias=True) if hasattr(body, 'model_dump') else body)
+        response = self._api.request("POST", "/v2/pickups", params=None, json_body=serialize_body(body))
         return SchedulePickupResponseBody.model_validate(response.json())
 
     def get_by_id(self, pickup_id: str) -> PickupResponseBody:
