@@ -11,6 +11,7 @@ from ..models import (
     GetCarrierOptionsResponseBody,
     ListCarrierPackageTypesResponseBody,
     ListCarrierServicesResponseBody,
+    ListCarriersResponseBody,
 )
 
 
@@ -20,10 +21,10 @@ class CarriersResource:
     def __init__(self, api: ApiClient) -> None:
         self._api = api
 
-    def list(self) -> Any:
+    def list(self) -> ListCarriersResponseBody:
         """List all carriers that have been added to this account."""
         response = self._api.request("GET", "/v2/carriers", params=None, json_body=None)
-        return response.json()  # type: ignore[return-value]
+        return ListCarriersResponseBody.model_validate(response.json())
 
     def get_by_id(self, carrier_id: str) -> GetCarrierByIdResponseBody:
         """Retrive details about a specific carrier by its carrier id."""

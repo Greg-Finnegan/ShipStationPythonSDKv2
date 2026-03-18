@@ -7,7 +7,11 @@ from typing import Any, Optional, Union
 
 from .._api import ApiClient
 from ..models import (
+    DeleteScheduledPickupResponseBody,
+    ListPickupResponseBody,
+    PickupResponseBody,
     SchedulePickupRequestBody,
+    SchedulePickupResponseBody,
 )
 
 
@@ -26,7 +30,7 @@ class PackagePickupsResource:
         created_at_end: Optional[datetime] = None,
         page: Optional[int] = 1,
         page_size: Optional[int] = 25,
-    ) -> Any:
+    ) -> ListPickupResponseBody:
         """List all pickups that have been scheduled for this carrier"""
         params: dict[str, Any] = {}
         if carrier_id is not None:
@@ -42,19 +46,19 @@ class PackagePickupsResource:
         if page_size is not None:
             params["page_size"] = page_size.value if hasattr(page_size, 'value') else (page_size.isoformat() if hasattr(page_size, 'isoformat') else page_size)
         response = self._api.request("GET", "/v2/pickups", params=params, json_body=None)
-        return response.json()  # type: ignore[return-value]
+        return ListPickupResponseBody.model_validate(response.json())
 
-    def schedule(self, *, body: SchedulePickupRequestBody) -> Any:
+    def schedule(self, *, body: SchedulePickupRequestBody) -> SchedulePickupResponseBody:
         """Schedule a package pickup with a carrier"""
         response = self._api.request("POST", "/v2/pickups", params=None, json_body=body.model_dump(exclude_none=True, by_alias=True) if hasattr(body, 'model_dump') else body)
-        return response.json()  # type: ignore[return-value]
+        return SchedulePickupResponseBody.model_validate(response.json())
 
-    def get_by_id(self, pickup_id: str) -> Any:
+    def get_by_id(self, pickup_id: str) -> PickupResponseBody:
         """Get Pickup By ID"""
         response = self._api.request("GET", f"/v2/pickups/{pickup_id}", params=None, json_body=None)
-        return response.json()  # type: ignore[return-value]
+        return PickupResponseBody.model_validate(response.json())
 
-    def delete_scheduled(self, pickup_id: str) -> Any:
+    def delete_scheduled(self, pickup_id: str) -> DeleteScheduledPickupResponseBody:
         """Delete a previously-scheduled pickup by ID"""
         response = self._api.request("DELETE", f"/v2/pickups/{pickup_id}", params=None, json_body=None)
-        return response.json()  # type: ignore[return-value]
+        return DeleteScheduledPickupResponseBody.model_validate(response.json())

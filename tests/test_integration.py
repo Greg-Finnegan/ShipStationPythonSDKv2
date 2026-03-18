@@ -15,6 +15,7 @@ from shipstation.models import (
     ListBatchesResponseBody,
     ListTagsResponseBody,
     ListWarehousesResponseBody,
+    ListCarriersResponseBody,
     ListCarrierPackageTypesResponseBody,
     ListCarrierServicesResponseBody,
 )
@@ -39,34 +40,31 @@ class TestCarriers:
     def test_list_carriers(self, client: ShipStation) -> None:
         result = client.carriers.list()
         assert result is not None
-        assert isinstance(result, (dict, list))
+        assert isinstance(result, ListCarriersResponseBody)
 
     def test_get_carrier_by_id(self, client: ShipStation) -> None:
-        carriers_data = client.carriers.list()
-        carrier_list = carriers_data.get("carriers", []) if isinstance(carriers_data, dict) else carriers_data
-        if not carrier_list:
+        result = client.carriers.list()
+        if not result.carriers:
             pytest.skip("No carriers connected")
-        carrier_id = carrier_list[0]["carrier_id"]
-        result = client.carriers.get_by_id(carrier_id=carrier_id)
-        assert result.carrier_id == carrier_id
+        carrier_id = result.carriers[0].carrier_id
+        carrier = client.carriers.get_by_id(carrier_id=carrier_id)
+        assert carrier.carrier_id == carrier_id
 
     def test_list_carrier_services(self, client: ShipStation) -> None:
-        carriers_data = client.carriers.list()
-        carrier_list = carriers_data.get("carriers", []) if isinstance(carriers_data, dict) else carriers_data
-        if not carrier_list:
+        result = client.carriers.list()
+        if not result.carriers:
             pytest.skip("No carriers connected")
-        carrier_id = carrier_list[0]["carrier_id"]
-        result = client.carriers.list_services(carrier_id=carrier_id)
-        assert isinstance(result, ListCarrierServicesResponseBody)
+        carrier_id = result.carriers[0].carrier_id
+        services = client.carriers.list_services(carrier_id=carrier_id)
+        assert isinstance(services, ListCarrierServicesResponseBody)
 
     def test_list_carrier_package_types(self, client: ShipStation) -> None:
-        carriers_data = client.carriers.list()
-        carrier_list = carriers_data.get("carriers", []) if isinstance(carriers_data, dict) else carriers_data
-        if not carrier_list:
+        result = client.carriers.list()
+        if not result.carriers:
             pytest.skip("No carriers connected")
-        carrier_id = carrier_list[0]["carrier_id"]
-        result = client.carriers.list_package_types(carrier_id=carrier_id)
-        assert isinstance(result, ListCarrierPackageTypesResponseBody)
+        carrier_id = result.carriers[0].carrier_id
+        packages = client.carriers.list_package_types(carrier_id=carrier_id)
+        assert isinstance(packages, ListCarrierPackageTypesResponseBody)
 
 
 # ---------------------------------------------------------------------------

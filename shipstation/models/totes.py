@@ -9,21 +9,6 @@ from pydantic import BaseModel, ConfigDict, Field
 
 
 
-class FailedToteResponse(BaseModel):
-    """Information about a failed tote creation"""
-
-    model_config = ConfigDict(populate_by_name=True)
-
-    inventory_warehouse_id: Optional[str] = None
-    """The warehouse ID from the failed request"""
-    tote_name: Optional[str] = None
-    """The tote name from the failed request"""
-    tote_barcode: Optional[str] = None
-    """The tote barcode from the failed request"""
-    error_message: Optional[str] = None
-    """Error message explaining why creation failed"""
-
-
 class Tote(BaseModel):
     """A tote (bin or container) used in warehouse picking and packing operations"""
 
@@ -39,6 +24,21 @@ class Tote(BaseModel):
     """Date and time when the tote was created"""
     tote_barcode: Optional[str] = None
     """Barcode identifier for the tote"""
+
+
+class FailedToteResponse(BaseModel):
+    """Information about a failed tote creation"""
+
+    model_config = ConfigDict(populate_by_name=True)
+
+    inventory_warehouse_id: Optional[str] = None
+    """The warehouse ID from the failed request"""
+    tote_name: Optional[str] = None
+    """The tote name from the failed request"""
+    tote_barcode: Optional[str] = None
+    """The tote barcode from the failed request"""
+    error_message: Optional[str] = None
+    """Error message explaining why creation failed"""
 
 
 class BulkCreateToteResponse(BaseModel):
