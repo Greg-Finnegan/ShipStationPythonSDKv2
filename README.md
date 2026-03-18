@@ -1,4 +1,4 @@
-# ShipStation Python SDK
+# ShipStation Python SDK (v2 API)
 
 A fully-typed Python SDK for the [ShipStation API V2](https://docs.shipstation.com/getting-started#/openapi), auto-generated from the official OpenAPI spec.
 
