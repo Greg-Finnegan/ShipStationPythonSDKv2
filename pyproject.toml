@@ -17,6 +17,7 @@ dependencies = [
 dev = [
     "pyright",
     "pytest",
+    "python-dotenv",
 ]
 
 [tool.setuptools.packages.find]
