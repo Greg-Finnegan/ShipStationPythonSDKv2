@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "shipstation"
+version = "2.0.0"
+description = "Fully-typed Python SDK for the ShipStation API v2"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+dependencies = [
+    "pydantic>=2.0",
+    "requests>=2.28",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pyright",
+    "pytest",
+]
+
+[tool.setuptools.packages.find]
+include = ["shipstation*"]
+
+[tool.pyright]
+pythonVersion = "3.11"
+typeCheckingMode = "basic"
